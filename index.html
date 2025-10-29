@@ -5359,39 +5359,44 @@ function toggleSettings() {
         }
 
         function startCooldownTimer() {
-            const sendButton = document.getElementById('sendBtnMain');
-            const assistantInput = document.getElementById('assistantInput');
-            
-            sendButton.disabled = true;
-            sendButton.style.opacity = '0.5';
-            sendButton.style.cursor = 'not-allowed';
-            assistantInput.disabled = true;
-            assistantInput.style.opacity = '0.5';
-            assistantInput.style.cursor = 'not-allowed';
-            
-            let remainingTime = Math.ceil(MIN_REQUEST_INTERVAL / 1000);
+    const sendButton = document.getElementById('sendBtnMain');  // ✅ Correct ID
+    const assistantInput = document.getElementById('assistantInput');  // ✅ Correct ID
+    
+    if (!sendButton || !assistantInput) {
+        console.error('Button or input not found');
+        return;
+    }
+    
+    sendButton.disabled = true;
+    sendButton.style.opacity = '0.5';
+    sendButton.style.cursor = 'not-allowed';
+    assistantInput.disabled = true;
+    assistantInput.style.opacity = '0.5';
+    assistantInput.style.cursor = 'not-allowed';
+    
+    let remainingTime = Math.ceil(MIN_REQUEST_INTERVAL / 1000);
+    sendButton.textContent = `⏳ Wait ${remainingTime}s`;
+    
+    if (countdownInterval) clearInterval(countdownInterval);
+    
+    countdownInterval = setInterval(() => {
+        remainingTime--;
+        if (remainingTime > 0) {
             sendButton.textContent = `⏳ Wait ${remainingTime}s`;
+        } else {
+            clearInterval(countdownInterval);
+            countdownInterval = null;
             
-            if (countdownInterval) clearInterval(countdownInterval);
-            
-            countdownInterval = setInterval(() => {
-                remainingTime--;
-                if (remainingTime > 0) {
-                    sendButton.textContent = `⏳ Wait ${remainingTime}s`;
-                } else {
-                    clearInterval(countdownInterval);
-                    countdownInterval = null;
-                    
-                    sendButton.disabled = false;
-                    sendButton.style.opacity = '1';
-                    sendButton.style.cursor = 'pointer';
-                    assistantInput.disabled = false;
-                    assistantInput.style.opacity = '1';
-                    assistantInput.style.cursor = 'text';
-                    sendButton.textContent = 'Send Question ➤';
-                }
-            }, 1000);
+            sendButton.disabled = false;
+            sendButton.style.opacity = '1';
+            sendButton.style.cursor = 'pointer';
+            assistantInput.disabled = false;
+            assistantInput.style.opacity = '1';
+            assistantInput.style.cursor = 'text';
+            sendButton.textContent = 'Send Question ➤';
         }
+    }, 1000);
+}
 
         function addMessage(role, content, withSpeaker = false) {
             const messagesDiv = document.getElementById('messages');
