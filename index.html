@@ -5398,9 +5398,14 @@ function toggleSettings() {
     }, 1000);
 }
 
-        function addMessage(role, content, withSpeaker = false) {
-            const messagesDiv = document.getElementById('messages');
-            const messageDiv = document.createElement('div');
+function addMessage(role, content, withSpeaker = false) {
+    const messagesDiv = document.getElementById('messages');
+    
+    // ✅ ADD THIS: Ensure parent containers are visible
+    const aiContainer = document.getElementById('aiMessagesContainer');
+    if (aiContainer) aiContainer.style.display = 'block';
+    
+    const messageDiv = document.createElement('div');
             messageDiv.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`;
             
             const cleanContent = content.replace(/`/g, '\\`').replace(/\$/g, '\\$').replace(/\n/g, '<br>');
@@ -5454,9 +5459,9 @@ function toggleSettings() {
             if (loading) loading.remove();
         }
 
-      async function sendMessage() {
-            const input = document.getElementById('assistantInput');
-            const message = input.value.trim();
+     async function sendMessage() {
+    const input = document.getElementById('assistantInput');  // ✅ CORRECT
+    const message = input.value.trim();
             
             if (!message) {
                 console.log('Empty message');
@@ -6031,8 +6036,9 @@ async function loadJsonFromGithub() {
             }
         }
 
-        function startCooldownTimer() {
-            const sendButton = document.getElementById('sendButton');
+function startCooldownTimer() {
+    const sendButton = document.getElementById('sendBtnMain');  // ✅ CORRECT
+    const assistantInput = document.getElementById('assistantInput');  // ✅ Already correct
             const sendIcon = document.getElementById('sendIcon');
             const countdownText = document.getElementById('countdownText');
             const messageInput = document.getElementById('messageInput');
