@@ -1887,7 +1887,7 @@ async function loadAssistantData() {
         // ✅ FETCH FROM NETWORK (only if cache miss or expired)
         console.log('🌐 Fetching from network...');
         const timestamp = Date.now();
-        const response = await fetch(`https://raw.githubusercontent.com/eguruOdisha/audio/main/assistant-qa.json?t=${timestamp}`, {
+        const response = await fetch(`https://github.com/eguruOdisha/BNSS/raw/main/s1assistant-qa.json?t=${timestamp}`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
