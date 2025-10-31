@@ -1858,22 +1858,12 @@ const CONCEPT_CATEGORIES = {
 async function loadAssistantData() {
     try {
         console.log('🔄 Loading assistant data...');
+        console.log('🌐 Fetching from GitHub Raw...');
         
-        // ✅ FORCE FRESH FETCH - NO CACHE AT ALL
-        console.log('🌐 Fetching fresh data from GitHub (no cache)...');
         const timestamp = Date.now();
         
-        // ✅ USE JSDELIVR CDN INSTEAD (bypasses GitHub cache)
-        const response = await fetch(`https://cdn.jsdelivr.net/gh/eguruOdisha/BNSS@main/s1assistant-qa.json?t=${timestamp}`, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Cache-Control': 'no-cache, no-store, must-revalidate',
-                'Pragma': 'no-cache',
-                'Expires': '0'
-            },
-            cache: 'no-store'  // ✅ Force no cache
-        });
+        // ✅ GitHub Raw URL with cache buster
+        const response = await fetch(`https://raw.githubusercontent.com/eguruOdisha/BNSS/main/s1assistant-qa.json?t=${timestamp}`);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -1887,15 +1877,13 @@ async function loadAssistantData() {
         
         console.log('✅ Assistant data loaded successfully');
         console.log('📊 Data structure:', Object.keys(assistantQAData));
-        console.log('📊 Section1 keys:', assistantQAData.section1 ? Object.keys(assistantQAData.section1) : 'section1 not found');
         
     } catch (error) {
         console.error('❌ Failed to load assistant data:', error);
         assistantQAData = null;
-        alert('⚠️ Failed to load database. Please check your internet connection and refresh the page.');
+        alert('⚠️ Failed to load database. Please refresh the page.');
     }
 }
-
 function getMermaidForCategory(category) {
     const mermaidGraphs = {
         'bare_act': `
