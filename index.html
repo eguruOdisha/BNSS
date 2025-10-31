@@ -1859,40 +1859,20 @@ async function loadAssistantData() {
     try {
         console.log('🔄 Loading assistant data...');
         
-        // ✅ CHECK CACHE FIRST (avoids network request)
-        const CACHE_KEY = 'assistantQAData_v2';  // ← Changed!
-const CACHE_TIME_KEY = 'assistantQADataTime_v2';  // ← Changed!
-        const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-        
-        const cachedData = localStorage.getItem(CACHE_KEY);
-        const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
-        
-        // If cache exists and is fresh, use it
-        if (cachedData && cachedTime) {
-            const age = Date.now() - parseInt(cachedTime);
-            if (age < CACHE_DURATION) {
-                console.log('✅ Using cached data (age: ' + Math.round(age / 1000 / 60) + ' minutes)');
-                assistantQAData = JSON.parse(cachedData);
-                
-                // Fix data structure if needed
-                assistantQAData = Array.isArray(assistantQAData) ? assistantQAData[0] : assistantQAData;
-                
-                console.log('✅ Assistant data loaded from cache');
-                return;
-            } else {
-                console.log('⏰ Cache expired, fetching fresh data...');
-            }
-        }
-        
-        // ✅ FETCH FROM NETWORK (only if cache miss or expired)
-        console.log('🌐 Fetching from network...');
+        // ✅ FORCE FRESH FETCH - NO CACHE AT ALL
+        console.log('🌐 Fetching fresh data from GitHub (no cache)...');
         const timestamp = Date.now();
-        const response = await fetch(`https://github.com/eguruOdisha/BNSS/raw/main/s1assistant-qa.json?t=${timestamp}`, {
+        
+        // ✅ USE JSDELIVR CDN INSTEAD (bypasses GitHub cache)
+        const response = await fetch(`https://cdn.jsdelivr.net/gh/eguruOdisha/BNSS@main/s1assistant-qa.json?t=${timestamp}`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0'
             },
-            cache: 'no-cache'  // Force fresh fetch when needed
+            cache: 'no-store'  // ✅ Force no cache
         });
         
         if (!response.ok) {
@@ -1900,42 +1880,21 @@ const CACHE_TIME_KEY = 'assistantQADataTime_v2';  // ← Changed!
         }
         
         const data = await response.json();
+        console.log('✅ Raw data received:', data);
         
         // Fix data structure
         assistantQAData = Array.isArray(data) ? data[0] : data;
         
-        // ✅ SAVE TO CACHE for next time
-        try {
-            localStorage.setItem(CACHE_KEY, JSON.stringify(assistantQAData));
-            localStorage.setItem(CACHE_TIME_KEY, Date.now().toString());
-            console.log('💾 Data cached successfully');
-        } catch (cacheError) {
-            console.warn('⚠️ Failed to cache data (storage full?):', cacheError);
-            // Continue anyway - caching is optional
-        }
-        
-        console.log('✅ Assistant data loaded from network');
+        console.log('✅ Assistant data loaded successfully');
         console.log('📊 Data structure:', Object.keys(assistantQAData));
         console.log('📊 Section1 keys:', assistantQAData.section1 ? Object.keys(assistantQAData.section1) : 'section1 not found');
         
     } catch (error) {
         console.error('❌ Failed to load assistant data:', error);
-        
-        // ✅ FALLBACK: Try to use old cache even if expired
-        const oldCache = localStorage.getItem('assistantQAData');
-        if (oldCache) {
-            console.log('⚠️ Using expired cache as fallback');
-            assistantQAData = JSON.parse(oldCache);
-            assistantQAData = Array.isArray(assistantQAData) ? assistantQAData[0] : assistantQAData;
-            return;
-        }
-        
-        // No cache available - show error
         assistantQAData = null;
         alert('⚠️ Failed to load database. Please check your internet connection and refresh the page.');
     }
 }
-
 
 function getMermaidForCategory(category) {
     const mermaidGraphs = {
