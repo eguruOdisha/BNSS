@@ -1434,27 +1434,58 @@ body > div:first-child {
 </div>
     <div class="container" id="mainApp">
   <div class="header">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; position: relative; z-index: 100;">
-        <div class="user-info" id="userInfo" style="position: relative; z-index: 1;">Roll: --</div>
-        <button onclick="backToRollPage()" 
-                style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); 
-                       color: white; 
-                       border: none; 
-                       padding: 8px 16px; 
-                       border-radius: 20px; 
-                       font-size: 12px; 
-                       font-weight: 600; 
-                       cursor: pointer; 
-                       box-shadow: 0 3px 10px rgba(255, 107, 107, 0.3);
-                       transition: all 0.3s ease;
-                       -webkit-tap-highlight-color: transparent;
-                       position: relative;
-                       z-index: 100;"
-                onmouseover="this.style.transform='scale(1.05)'"
-                onmouseout="this.style.transform='scale(1)'">
-            ← Back
-        </button>
+   <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; position: relative; z-index: 100; padding: 0 5px;">
+    <!-- Roll Number Button (Left) -->
+    <div id="userInfo" 
+         style="background: linear-gradient(135deg, #667eea, #764ba2); 
+                color: white; 
+                border: none; 
+                padding: 10px 20px; 
+                border-radius: 25px; 
+                font-size: 14px; 
+                font-weight: 700; 
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+                transition: all 0.3s ease;
+                -webkit-tap-highlight-color: transparent;
+                position: relative;
+                z-index: 100;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                flex: 1;
+                justify-content: center;
+                min-height: 42px;">
+        <span style="font-size: 16px;">🎓</span>
+        <span>Roll: --</span>
     </div>
+    
+    <!-- Back Button (Right) -->
+    <button onclick="backToRollPage()" 
+            style="background: linear-gradient(135deg, #667eea, #764ba2); 
+                   color: white; 
+                   border: none; 
+                   padding: 10px 20px; 
+                   border-radius: 25px; 
+                   font-size: 14px; 
+                   font-weight: 700; 
+                   cursor: pointer; 
+                   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+                   transition: all 0.3s ease;
+                   -webkit-tap-highlight-color: transparent;
+                   position: relative;
+                   z-index: 100;
+                   display: flex;
+                   align-items: center;
+                   gap: 6px;
+                   flex: 1;
+                   justify-content: center;
+                   min-height: 42px;"
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 18px rgba(102, 126, 234, 0.6)'"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(102, 126, 234, 0.4)'">
+        <span style="font-size: 16px;">←</span>
+        <span>Back</span>
+    </button>
+</div>
     <h1>🎓 Odisha e-Guru Assistant</h1>
           
             <img src="https://github.com/eguruOdisha/BNSS/raw/main/bot%20image-1.gif" 
@@ -1782,7 +1813,7 @@ body: JSON.stringify({
             setTimeout(() => {
                 document.getElementById('welcomePage').style.display = 'none';
                 document.getElementById('mainApp').classList.add('show');
-                document.getElementById('userInfo').textContent = `Roll: ${rollNumber}`;
+                document.getElementById('userInfo').innerHTML = `<span style="font-size: 16px;">🎓</span><span>Roll: ${rollNumber}</span>`;
                 updateWatermark();
                 loadAssistantData();
             }, 1500);
@@ -4736,21 +4767,44 @@ function backToRollPage() {
         
         // Reset consent checkbox
         const checkbox = document.getElementById('consentCheckbox');
-        checkbox.style.background = 'transparent';
-        checkbox.style.borderColor = '#666';
-        checkbox.innerHTML = '';
+        if (checkbox) {
+            checkbox.style.background = 'transparent';
+            checkbox.style.borderColor = '#667eea';
+            checkbox.innerHTML = '';
+        }
         
         const enterBtn = document.getElementById('enterBtn');
-        enterBtn.style.opacity = '0.6';
-        enterBtn.disabled = false;
-        enterBtn.textContent = '🚀 Start Learning';
+        if (enterBtn) {
+            enterBtn.style.opacity = '0.6';
+            enterBtn.disabled = false;
+            enterBtn.textContent = '🚀 Start Learning';
+        }
         
-        // Hide main app and show welcome page
-        document.getElementById('mainApp').classList.remove('show');
-        document.getElementById('welcomePage').style.display = 'flex';
+        // Hide main app FIRST
+        const mainApp = document.getElementById('mainApp');
+        if (mainApp) {
+            mainApp.style.display = 'none';
+            mainApp.classList.remove('show');
+        }
         
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Show welcome page with proper display
+        const welcomePage = document.getElementById('welcomePage');
+        if (welcomePage) {
+            welcomePage.style.display = 'flex';
+            // Reset scroll position of inner container
+            const welcomeInner = welcomePage.querySelector('.welcome-page-inner');
+            if (welcomeInner) {
+                welcomeInner.scrollTop = 0;
+            }
+        }
+        
+        // Scroll window to top
+        window.scrollTo({ top: 0, behavior: 'auto' });
+        
+        // Force a small delay to ensure rendering
+        setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'auto' });
+        }, 50);
     }
 }
 
