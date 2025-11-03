@@ -31,18 +31,6 @@ html, body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-        /* Force welcome page to be on top when shown */
-.welcome-page.active {
-    display: flex !important;
-    z-index: 99999 !important;
-    position: fixed !important;
-}
-
-.container.hidden {
-    display: none !important;
-    z-index: -1 !important;
-}
-        
 /* Welcome Page - Mobile Optimized */
 .welcome-page {
     display: flex;
@@ -1445,66 +1433,15 @@ body > div:first-child {
     </div>
 </div>
     <div class="container" id="mainApp">
-  <div class="header">
-  <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 15px; position: relative; z-index: 100; padding: 0 5px;">
-    <!-- Roll Number Button (Left) - DEEP BLUE -->
-    <div id="userInfo" 
-         style="background: linear-gradient(135deg, #1e3c72, #2a5298); 
-                color: white; 
-                border: none; 
-                padding: 12px 24px; 
-                border-radius: 30px; 
-                font-size: 15px; 
-                font-weight: 700; 
-                box-shadow: 0 5px 15px rgba(30, 60, 114, 0.5);
-                transition: all 0.3s ease;
-                -webkit-tap-highlight-color: transparent;
-                position: relative;
-                z-index: 100;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 8px;
-                flex: 1;
-                min-height: 48px;
-                border: 2px solid rgba(255,255,255,0.2);">
-        <span style="font-size: 18px;">🎓</span>
-        <span style="letter-spacing: 0.5px;">Roll: --</span>
-    </div>
-    
-    <!-- Back Button (Right) - DEEP BLUE -->
-    <button onclick="backToRollPage()" 
-            style="background: linear-gradient(135deg, #1e3c72, #2a5298); 
-                   color: white; 
-                   border: 2px solid rgba(255,255,255,0.2); 
-                   padding: 12px 24px; 
-                   border-radius: 30px; 
-                   font-size: 15px; 
-                   font-weight: 700; 
-                   cursor: pointer; 
-                   box-shadow: 0 5px 15px rgba(30, 60, 114, 0.5);
-                   transition: all 0.3s ease;
-                   -webkit-tap-highlight-color: transparent;
-                   position: relative;
-                   z-index: 100;
-                   display: flex;
-                   align-items: center;
-                   justify-content: center;
-                   gap: 8px;
-                   flex: 1;
-                   min-height: 48px;"
-            onmouseover="this.style.transform='translateY(-3px) scale(1.02)'; this.style.boxShadow='0 8px 20px rgba(30, 60, 114, 0.7)'; this.style.background='linear-gradient(135deg, #2a5298, #1e3c72)'"
-            onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 5px 15px rgba(30, 60, 114, 0.5)'; this.style.background='linear-gradient(135deg, #1e3c72, #2a5298)'">
-        <span style="font-size: 18px; font-weight: 900;">←</span>
-        <span style="letter-spacing: 0.5px;">Back</span>
-    </button>
-</div>
+        <div class="header">
+    <div class="user-info" id="userInfo">Roll: --</div>
     <h1>🎓 Odisha e-Guru Assistant</h1>
           
             <img src="https://github.com/eguruOdisha/BNSS/raw/main/bot%20image-1.gif" 
                  alt="AI Assistant" 
                  class="assistant-image">
         </div>
+
         <div class="assistant-section">
             <div class="quick-actions">
                 <button class="main-action-btn" id="mainActionBtn" onclick="toggleActions()">
@@ -1824,14 +1761,9 @@ body: JSON.stringify({
             showMessage(result.message || '✅ Roll number verified successfully!', 'success');
             
             setTimeout(() => {
-                const welcomePage = document.getElementById('welcomePage');
-welcomePage.style.display = 'none';
-welcomePage.classList.remove('active');
-               const mainApp = document.getElementById('mainApp');
-mainApp.classList.add('show');
-mainApp.classList.remove('hidden');
-mainApp.style.display = 'block';
-                document.getElementById('userInfo').innerHTML = `<span style="font-size: 18px;">🎓</span><span style="letter-spacing: 0.5px;">Roll: ${rollNumber}</span>`;
+                document.getElementById('welcomePage').style.display = 'none';
+                document.getElementById('mainApp').classList.add('show');
+                document.getElementById('userInfo').textContent = `Roll: ${rollNumber}`;
                 updateWatermark();
                 loadAssistantData();
             }, 1500);
@@ -4755,98 +4687,14 @@ function toggleBNSSText() {
     }
 }
 
-// NEW: Back to Roll Number Page
-function backToRollPage() {
-    const confirmed = confirm('⚠️ Are you sure you want to go back to the Roll Number page?\n\nYour current session will be reset.');
-    
-    if (!confirmed) return;
-    
-    // Reset all session data
-    userRollNumber = null;
-    userDeviceId = null;
-    sessionStartTime = null;
-    consentChecked = false;
-    currentTest = null;
-    userAnswers = {};
-    cumulativeScore = 0;
-    cumulativeTotalMarks = 0;
-    
-    // Stop any playing audio
-    if (currentAudio) {
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-        currentAudio = null;
-    }
-    
-    // Reset UI elements
-    const rollInput = document.getElementById('rollInput');
-    const assistantInput = document.getElementById('assistantInput');
-    const responseContainer = document.getElementById('responseContainer');
-    const checkbox = document.getElementById('consentCheckbox');
-    const enterBtn = document.getElementById('enterBtn');
-    const mainApp = document.getElementById('mainApp');
-    const welcomePage = document.getElementById('welcomePage');
-    
-    // Clear inputs
-    if (rollInput) rollInput.value = '';
-    if (assistantInput) assistantInput.value = '';
-    if (responseContainer) {
-        responseContainer.innerHTML = '';
-        responseContainer.classList.remove('show');
-    }
-    
-    // Reset consent checkbox
-    if (checkbox) {
-        checkbox.style.background = 'white';
-        checkbox.style.borderColor = '#667eea';
-        checkbox.innerHTML = '';
-    }
-    
-    // Reset enter button
-    if (enterBtn) {
-        enterBtn.style.opacity = '0.6';
-        enterBtn.disabled = false;
-        enterBtn.textContent = '🚀 Start Learning';
-    }
-    
-    // CRITICAL: Hide main app completely
-    if (mainApp) {
-        mainApp.style.display = 'none';
-        mainApp.classList.remove('show');
-        mainApp.classList.add('hidden');
-    }
-    
-    // CRITICAL: Show welcome page
-    if (welcomePage) {
-        welcomePage.style.display = 'flex';
-        welcomePage.classList.add('active');
-        welcomePage.style.zIndex = '99999';
-        welcomePage.style.position = 'fixed';
-    }
-    
-    // Force scroll to top
-    document.body.scrollTop = 0;
-    document.documentElement.scrollTop = 0;
-    window.scrollTo(0, 0);
-    
-    // Double-check after a tiny delay
-    setTimeout(() => {
-        if (mainApp) mainApp.style.display = 'none';
-        if (welcomePage) {
-            welcomePage.style.display = 'flex';
-            welcomePage.style.visibility = 'visible';
-        }
-        window.scrollTo(0, 0);
-    }, 50);
-    
-    console.log('✅ Returned to roll page');
-}
 // Disable right-click
 document.addEventListener('contextmenu', function(e) {
     e.preventDefault();
     alert('Right-click is disabled! This content is protected.');
     return false;
 });
+
+
 
 </script>
 
