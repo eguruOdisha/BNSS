@@ -1433,15 +1433,33 @@ body > div:first-child {
     </div>
 </div>
     <div class="container" id="mainApp">
-        <div class="header">
-    <div class="user-info" id="userInfo">Roll: --</div>
+   <div class="header">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <div class="user-info" id="userInfo">Roll: --</div>
+        <button onclick="backToRollPage()" 
+                style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); 
+                       color: white; 
+                       border: none; 
+                       padding: 8px 16px; 
+                       border-radius: 20px; 
+                       font-size: 12px; 
+                       font-weight: 600; 
+                       cursor: pointer; 
+                       box-shadow: 0 3px 10px rgba(255, 107, 107, 0.3);
+                       transition: all 0.3s ease;
+                       -webkit-tap-highlight-color: transparent;"
+                onmouseover="this.style.transform='scale(1.05)'"
+                onmouseout="this.style.transform='scale(1)'"
+                title="Return to Roll Number Page">
+            ← Back
+        </button>
+    </div>
     <h1>🎓 Odisha e-Guru Assistant</h1>
           
             <img src="https://github.com/eguruOdisha/BNSS/raw/main/bot%20image-1.gif" 
                  alt="AI Assistant" 
                  class="assistant-image">
         </div>
-
         <div class="assistant-section">
             <div class="quick-actions">
                 <button class="main-action-btn" id="mainActionBtn" onclick="toggleActions()">
@@ -4687,14 +4705,60 @@ function toggleBNSSText() {
     }
 }
 
+// NEW: Back to Roll Number Page
+function backToRollPage() {
+    const confirmed = confirm('⚠️ Are you sure you want to go back to the Roll Number page?\n\nYour current session will be reset.');
+    
+    if (confirmed) {
+        // Reset all session data
+        userRollNumber = null;
+        userDeviceId = null;
+        sessionStartTime = null;
+        consentChecked = false;
+        currentTest = null;
+        userAnswers = {};
+        cumulativeScore = 0;
+        cumulativeTotalMarks = 0;
+        
+        // Stop any playing audio
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+            currentAudio = null;
+        }
+        
+        // Reset UI elements
+        document.getElementById('rollInput').value = '';
+        document.getElementById('assistantInput').value = '';
+        document.getElementById('responseContainer').innerHTML = '';
+        document.getElementById('responseContainer').classList.remove('show');
+        
+        // Reset consent checkbox
+        const checkbox = document.getElementById('consentCheckbox');
+        checkbox.style.background = 'transparent';
+        checkbox.style.borderColor = '#666';
+        checkbox.innerHTML = '';
+        
+        const enterBtn = document.getElementById('enterBtn');
+        enterBtn.style.opacity = '0.6';
+        enterBtn.disabled = false;
+        enterBtn.textContent = '🚀 Start Learning';
+        
+        // Hide main app and show welcome page
+        document.getElementById('mainApp').classList.remove('show');
+        document.getElementById('welcomePage').style.display = 'flex';
+        
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
 // Disable right-click
 document.addEventListener('contextmenu', function(e) {
     e.preventDefault();
     alert('Right-click is disabled! This content is protected.');
     return false;
 });
-
-
 
 </script>
 
