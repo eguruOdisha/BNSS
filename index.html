@@ -1433,9 +1433,9 @@ body > div:first-child {
     </div>
 </div>
     <div class="container" id="mainApp">
-   <div class="header">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <div class="user-info" id="userInfo">Roll: --</div>
+  <div class="header">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; position: relative; z-index: 100;">
+        <div class="user-info" id="userInfo" style="position: relative; z-index: 1;">Roll: --</div>
         <button onclick="backToRollPage()" 
                 style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); 
                        color: white; 
@@ -1447,10 +1447,11 @@ body > div:first-child {
                        cursor: pointer; 
                        box-shadow: 0 3px 10px rgba(255, 107, 107, 0.3);
                        transition: all 0.3s ease;
-                       -webkit-tap-highlight-color: transparent;"
+                       -webkit-tap-highlight-color: transparent;
+                       position: relative;
+                       z-index: 100;"
                 onmouseover="this.style.transform='scale(1.05)'"
-                onmouseout="this.style.transform='scale(1)'"
-                title="Return to Roll Number Page">
+                onmouseout="this.style.transform='scale(1)'">
             ← Back
         </button>
     </div>
