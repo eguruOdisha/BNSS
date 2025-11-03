@@ -1434,56 +1434,57 @@ body > div:first-child {
 </div>
     <div class="container" id="mainApp">
   <div class="header">
-   <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; position: relative; z-index: 100; padding: 0 5px;">
-    <!-- Roll Number Button (Left) -->
+  <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 15px; position: relative; z-index: 100; padding: 0 5px;">
+    <!-- Roll Number Button (Left) - DEEP BLUE -->
     <div id="userInfo" 
-         style="background: linear-gradient(135deg, #667eea, #764ba2); 
+         style="background: linear-gradient(135deg, #1e3c72, #2a5298); 
                 color: white; 
                 border: none; 
-                padding: 10px 20px; 
-                border-radius: 25px; 
-                font-size: 14px; 
+                padding: 12px 24px; 
+                border-radius: 30px; 
+                font-size: 15px; 
                 font-weight: 700; 
-                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+                box-shadow: 0 5px 15px rgba(30, 60, 114, 0.5);
                 transition: all 0.3s ease;
                 -webkit-tap-highlight-color: transparent;
                 position: relative;
                 z-index: 100;
                 display: flex;
                 align-items: center;
-                gap: 6px;
-                flex: 1;
                 justify-content: center;
-                min-height: 42px;">
-        <span style="font-size: 16px;">🎓</span>
-        <span>Roll: --</span>
+                gap: 8px;
+                flex: 1;
+                min-height: 48px;
+                border: 2px solid rgba(255,255,255,0.2);">
+        <span style="font-size: 18px;">🎓</span>
+        <span style="letter-spacing: 0.5px;">Roll: --</span>
     </div>
     
-    <!-- Back Button (Right) -->
+    <!-- Back Button (Right) - DEEP BLUE -->
     <button onclick="backToRollPage()" 
-            style="background: linear-gradient(135deg, #667eea, #764ba2); 
+            style="background: linear-gradient(135deg, #1e3c72, #2a5298); 
                    color: white; 
-                   border: none; 
-                   padding: 10px 20px; 
-                   border-radius: 25px; 
-                   font-size: 14px; 
+                   border: 2px solid rgba(255,255,255,0.2); 
+                   padding: 12px 24px; 
+                   border-radius: 30px; 
+                   font-size: 15px; 
                    font-weight: 700; 
                    cursor: pointer; 
-                   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+                   box-shadow: 0 5px 15px rgba(30, 60, 114, 0.5);
                    transition: all 0.3s ease;
                    -webkit-tap-highlight-color: transparent;
                    position: relative;
                    z-index: 100;
                    display: flex;
                    align-items: center;
-                   gap: 6px;
-                   flex: 1;
                    justify-content: center;
-                   min-height: 42px;"
-            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 18px rgba(102, 126, 234, 0.6)'"
-            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(102, 126, 234, 0.4)'">
-        <span style="font-size: 16px;">←</span>
-        <span>Back</span>
+                   gap: 8px;
+                   flex: 1;
+                   min-height: 48px;"
+            onmouseover="this.style.transform='translateY(-3px) scale(1.02)'; this.style.boxShadow='0 8px 20px rgba(30, 60, 114, 0.7)'; this.style.background='linear-gradient(135deg, #2a5298, #1e3c72)'"
+            onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 5px 15px rgba(30, 60, 114, 0.5)'; this.style.background='linear-gradient(135deg, #1e3c72, #2a5298)'">
+        <span style="font-size: 18px; font-weight: 900;">←</span>
+        <span style="letter-spacing: 0.5px;">Back</span>
     </button>
 </div>
     <h1>🎓 Odisha e-Guru Assistant</h1>
@@ -1811,9 +1812,14 @@ body: JSON.stringify({
             showMessage(result.message || '✅ Roll number verified successfully!', 'success');
             
             setTimeout(() => {
-                document.getElementById('welcomePage').style.display = 'none';
-                document.getElementById('mainApp').classList.add('show');
-                document.getElementById('userInfo').innerHTML = `<span style="font-size: 16px;">🎓</span><span>Roll: ${rollNumber}</span>`;
+                const welcomePage = document.getElementById('welcomePage');
+welcomePage.style.display = 'none';
+welcomePage.classList.remove('active');
+               const mainApp = document.getElementById('mainApp');
+mainApp.classList.add('show');
+mainApp.classList.remove('hidden');
+mainApp.style.display = 'block';
+                document.getElementById('userInfo').innerHTML = `<span style="font-size: 18px;">🎓</span><span style="letter-spacing: 0.5px;">Roll: ${rollNumber}</span>`;
                 updateWatermark();
                 loadAssistantData();
             }, 1500);
