@@ -31,6 +31,18 @@ html, body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+        /* Force welcome page to be on top when shown */
+.welcome-page.active {
+    display: flex !important;
+    z-index: 99999 !important;
+    position: fixed !important;
+}
+
+.container.hidden {
+    display: none !important;
+    z-index: -1 !important;
+}
+        
 /* Welcome Page - Mobile Optimized */
 .welcome-page {
     display: flex;
@@ -4747,73 +4759,88 @@ function toggleBNSSText() {
 function backToRollPage() {
     const confirmed = confirm('⚠️ Are you sure you want to go back to the Roll Number page?\n\nYour current session will be reset.');
     
-    if (confirmed) {
-        // Reset all session data
-        userRollNumber = null;
-        userDeviceId = null;
-        sessionStartTime = null;
-        consentChecked = false;
-        currentTest = null;
-        userAnswers = {};
-        cumulativeScore = 0;
-        cumulativeTotalMarks = 0;
-        
-        // Stop any playing audio
-        if (currentAudio) {
-            currentAudio.pause();
-            currentAudio.currentTime = 0;
-            currentAudio = null;
-        }
-        
-        // Reset UI elements
-        document.getElementById('rollInput').value = '';
-        document.getElementById('assistantInput').value = '';
-        document.getElementById('responseContainer').innerHTML = '';
-        document.getElementById('responseContainer').classList.remove('show');
-        
-        // Reset consent checkbox
-        const checkbox = document.getElementById('consentCheckbox');
-        if (checkbox) {
-            checkbox.style.background = 'transparent';
-            checkbox.style.borderColor = '#667eea';
-            checkbox.innerHTML = '';
-        }
-        
-        const enterBtn = document.getElementById('enterBtn');
-        if (enterBtn) {
-            enterBtn.style.opacity = '0.6';
-            enterBtn.disabled = false;
-            enterBtn.textContent = '🚀 Start Learning';
-        }
-        
-        // Hide main app FIRST
-        const mainApp = document.getElementById('mainApp');
-        if (mainApp) {
-            mainApp.style.display = 'none';
-            mainApp.classList.remove('show');
-        }
-        
-        // Show welcome page with proper display
-        const welcomePage = document.getElementById('welcomePage');
+    if (!confirmed) return;
+    
+    // Reset all session data
+    userRollNumber = null;
+    userDeviceId = null;
+    sessionStartTime = null;
+    consentChecked = false;
+    currentTest = null;
+    userAnswers = {};
+    cumulativeScore = 0;
+    cumulativeTotalMarks = 0;
+    
+    // Stop any playing audio
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+    }
+    
+    // Reset UI elements
+    const rollInput = document.getElementById('rollInput');
+    const assistantInput = document.getElementById('assistantInput');
+    const responseContainer = document.getElementById('responseContainer');
+    const checkbox = document.getElementById('consentCheckbox');
+    const enterBtn = document.getElementById('enterBtn');
+    const mainApp = document.getElementById('mainApp');
+    const welcomePage = document.getElementById('welcomePage');
+    
+    // Clear inputs
+    if (rollInput) rollInput.value = '';
+    if (assistantInput) assistantInput.value = '';
+    if (responseContainer) {
+        responseContainer.innerHTML = '';
+        responseContainer.classList.remove('show');
+    }
+    
+    // Reset consent checkbox
+    if (checkbox) {
+        checkbox.style.background = 'white';
+        checkbox.style.borderColor = '#667eea';
+        checkbox.innerHTML = '';
+    }
+    
+    // Reset enter button
+    if (enterBtn) {
+        enterBtn.style.opacity = '0.6';
+        enterBtn.disabled = false;
+        enterBtn.textContent = '🚀 Start Learning';
+    }
+    
+    // CRITICAL: Hide main app completely
+    if (mainApp) {
+        mainApp.style.display = 'none';
+        mainApp.classList.remove('show');
+        mainApp.classList.add('hidden');
+    }
+    
+    // CRITICAL: Show welcome page
+    if (welcomePage) {
+        welcomePage.style.display = 'flex';
+        welcomePage.classList.add('active');
+        welcomePage.style.zIndex = '99999';
+        welcomePage.style.position = 'fixed';
+    }
+    
+    // Force scroll to top
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+    window.scrollTo(0, 0);
+    
+    // Double-check after a tiny delay
+    setTimeout(() => {
+        if (mainApp) mainApp.style.display = 'none';
         if (welcomePage) {
             welcomePage.style.display = 'flex';
-            // Reset scroll position of inner container
-            const welcomeInner = welcomePage.querySelector('.welcome-page-inner');
-            if (welcomeInner) {
-                welcomeInner.scrollTop = 0;
-            }
+            welcomePage.style.visibility = 'visible';
         }
-        
-        // Scroll window to top
-        window.scrollTo({ top: 0, behavior: 'auto' });
-        
-        // Force a small delay to ensure rendering
-        setTimeout(() => {
-            window.scrollTo({ top: 0, behavior: 'auto' });
-        }, 50);
-    }
+        window.scrollTo(0, 0);
+    }, 50);
+    
+    console.log('✅ Returned to roll page');
 }
-
 // Disable right-click
 document.addEventListener('contextmenu', function(e) {
     e.preventDefault();
